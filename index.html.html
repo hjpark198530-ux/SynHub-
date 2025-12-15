@@ -1,0 +1,1834 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SynHub Mobile App (Final UI Design)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Pretendard Font (Korean Font) -->
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css" />
+    <style>
+        /* Final UI Colors & Typography */
+        :root {
+            --color-primary: #3CA2AE; /* Teal/Blue - SynHub Logo */
+            --color-accent: #1295B9; /* Login button color to #1295b9 */
+            --color-background-light: #F9F9F9; /* App main background */
+            --color-card-bg: #FFFFFF; /* Card/Login Box background */
+            --color-welcome-text: #4A4A4A;
+            --color-sub-text: #9B9B9B;
+            --color-tab-inactive: #D0D4DB;
+            --color-tab-active-bg: #EAF0F6;
+            --color-red: #EF4444;
+            --color-blue: #3B82F6;
+            --color-orange: #F97316; /* For active buttons in Syn-Finder */
+        }
+        
+        body {
+            font-family: 'Pretendard', sans-serif;
+            color: #2D3748;
+            background-color: var(--color-background-light); /* Outer body background */
+        }
+
+        /* Mobile Frame - Simple Box Shadow, Flat Background */
+        #app-container {
+            position: relative;
+            width: 100%;
+            max-width: 420px;
+            min-height: 100vh;
+            margin: 0 auto;
+            background-color: var(--color-background-light);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Flatter shadow */
+            overflow: hidden; 
+        }
+
+        /* Screens/Header - Use light background to match UI */
+        #login-screen, #home-screen, #syn-finder-screen, #loading-screen, #result-screen, #sent-screen, #survey-result-screen, #hub-voice-screen, #insight-report-screen {
+            background-color: transparent;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .app-header {
+            background-color: var(--color-card-bg); /* White background for header based on image */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        /* General Card/Input Styles */
+        .flat-card {
+            background-color: var(--color-card-bg);
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); 
+        }
+        .flat-input {
+            border: 1px solid #D1D5DB;
+            border-radius: 8px;
+            padding: 1rem;
+            transition: border-color 0.2s;
+            font-weight: 500;
+        }
+        .flat-input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 2px rgba(60, 162, 174, 0.3);
+        }
+
+        /* Login Button Style (1. Changed to Green) */
+        .login-btn {
+            background-color: var(--color-accent); 
+            color: white;
+            font-weight: 700;
+            border-radius: 8px;
+            transition: background-color 0.2s;
+        }
+        .login-btn:hover {
+            background-color: #0d6e8a; /* Darker shade of #1295B9 */
+        }
+
+        /* Syn-Finder Form Styles */
+        .form-section {
+            background-color: var(--color-card-bg);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+        }
+        .form-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        .select-box, .text-input-field {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #D1D5DB;
+            border-radius: 6px;
+            background-color: white;
+            appearance: none; /* Remove default arrow */
+            font-weight: 500;
+        }
+        /* Custom Select Arrow Styling */
+        .custom-select-wrapper {
+            position: relative;
+        }
+        .custom-select-wrapper::after {
+            content: '▼';
+            font-size: 10px;
+            color: #999;
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+        }
+
+        /* Fix for select box spacing (added height to button for alignment) */
+        .select-box-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .select-box-wrapper .select-box {
+            flex-grow: 1;
+        }
+        .select-box-wrapper button {
+            height: 42px; /* Ensure button aligns with input field height */
+            white-space: nowrap;
+        }
+
+        /* Button Toggle Styles */
+        .toggle-btn {
+            padding: 8px 12px;
+            border: 1px solid #D1D5DB;
+            border-radius: 20px;
+            font-weight: 600;
+            color: #555;
+            transition: all 0.2s;
+            background-color: var(--color-background-light);
+        }
+        .toggle-btn.active {
+            background-color: var(--color-orange);
+            border-color: var(--color-orange);
+            color: white;
+        }
+
+        /* Final CTA Button */
+        #extract-button {
+            background-color: var(--color-primary);
+            color: white;
+            font-weight: 700;
+            padding: 14px;
+            border-radius: 10px;
+            width: 100%;
+            margin-top: 20px;
+            box-shadow: 0 4px 10px rgba(60, 162, 174, 0.4);
+        }
+        
+        /* === Result Screen Proceed Button Style === */
+        .btn-proceed {
+            background-color: var(--color-accent); 
+            color: white;
+            font-weight: 700;
+            padding: 14px;
+            border-radius: 10px;
+            width: 100%;
+            margin-top: 20px;
+            box-shadow: 0 4px 10px rgba(18, 149, 185, 0.4); /* Shadow color based on new accent color */
+            transition: background-color 0.2s;
+        }
+        .btn-proceed:hover {
+            background-color: #0d6e8a;
+        }
+        /* ======================================= */
+
+        /* Home Screen Tab Buttons (2. Changed to Blue/Gray) */
+        .home-tab-btn {
+            background-color: #E5E7EB; /* Light gray base */
+            color: #4B5563; /* Gray */
+            font-weight: 700;
+            padding: 10px 15px;
+            border-radius: 8px;
+            transition: all 0.2s;
+            flex: 1;
+            margin: 0 4px;
+        }
+        .home-tab-btn.active {
+            background-color: var(--color-primary); /* Blue */
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            color: white;
+        }
+
+        /* Report Circle Styles */
+        .report-item-container {
+            background-color: transparent;
+            border: none;
+            padding: 0;
+            font-weight: 700;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+        .circle-text {
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s;
+            text-align: center;
+            padding: 8px;
+            line-height: 1.2;
+            white-space: normal;
+            word-break: keep-all;
+            margin: 10px;
+        }
+        .text-size-xl { font-size: 24px; }
+        .text-size-lg { font-size: 20px; }
+        .text-size-md { font-size: 18px; }
+        .text-size-sm { font-size: 16px; }
+        .opacity-70 { opacity: 0.7; }
+        
+        /* NOTE: The item-X positioning styles are now deprecated and handled inline for fine-tuned absolute layout. */
+        /* Removing old margin-based positioning for cleanup: */
+        .item-1, .item-2, .item-3, .item-4, .item-5, .item-6, .item-7, .item-8 {
+             /* Positioning is now handled via inline 'style' attributes using 'absolute' */
+        }
+        .report-item-container > span { margin: 0; }
+
+        /* AI Loading Spinner Styles */
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); } /* Fixed typo: transform -> rotate */
+        }
+        .ai-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--color-primary);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: rotate 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        /* Result Screen Styles */
+        .result-list-item-panel {
+            background-color: var(--color-card-bg);
+            border-radius: 8px;
+            padding: 12px 16px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .result-list-item-panel h4 {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        .result-list-detail {
+            font-size: 13px;
+            color: #555;
+            line-height: 1.4;
+        }
+        .target-group-header {
+            font-weight: 700;
+            color: var(--color-primary);
+            border-bottom: 2px solid var(--color-background-light);
+            padding-bottom: 4px;
+            margin-top: 15px;
+            margin-bottom: 8px;
+            font-size: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .hide-toggle-button {
+            background-color: var(--color-accent); /* Changed to Accent Green */
+            color: white;
+            font-weight: 600;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: background-color 0.2s;
+            font-size: 12px;
+            border: none;
+        }
+        .hide-toggle-button:hover {
+            background-color: #1a7e4b;
+        }
+        
+        /* Modal Styles (Shared for Confirmation and Info) */
+        .confirmation-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .confirmation-content {
+            background-color: var(--color-card-bg);
+            padding: 24px;
+            border-radius: 12px;
+            max-width: 320px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        }
+        .modal-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .modal-buttons button {
+            flex-grow: 1;
+            padding: 10px;
+            font-weight: 700;
+            border-radius: 8px;
+            transition: background-color 0.2s;
+        }
+        .btn-prev {
+            background-color: #E5E7EB;
+            color: #4B5563;
+        }
+        .btn-confirm {
+            background-color: var(--color-primary);
+            color: white;
+        }
+        
+        /* Sent Screen Styles */
+        .sent-screen-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px; /* 0.5cm gap */
+            width: 95%; /* Use near-full width */
+            max-width: 400px;
+            margin-top: 30px;
+        }
+        .btn-main-home {
+            background-color: #E5E7EB;
+            color: #4B5563;
+            padding: 18px 20px; 
+            font-size: 18px; 
+            flex-grow: 1;
+            border-radius: 10px;
+        }
+        .btn-view-results {
+            background-color: var(--color-primary);
+            color: white;
+            padding: 18px 20px; 
+            font-size: 18px; 
+            flex-grow: 1;
+            border-radius: 10px;
+        }
+
+        /* Survey Result Styles */
+        .chart-card {
+            background-color: var(--color-card-bg);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+        }
+        .chart-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 12px;
+        }
+        /* Response Rate Bar Chart */
+        .progress-bar-container {
+            height: 20px;
+            background-color: #E0E7FF; /* Light blue background */
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+        .progress-bar {
+            height: 100%;
+            background-color: var(--color-blue);
+            transition: width 1s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 8px;
+            font-weight: 700;
+            font-size: 12px;
+            color: white;
+        }
+        /* Donut Chart Colors */
+        .donut-q1 {
+            --c1: #3b82f6; /* 50% */
+            --c2: #10b981; /* 30% */
+            --c3: #f59e0b; /* 10% */
+            --c4: #ef4444; /* 5% */
+            --c5: #9ca3af; /* 5% */
+            background: conic-gradient(
+                var(--c1) 0%, var(--c1) 50%,
+                var(--c2) 50%, var(--c2) 80%,
+                var(--c3) 80%, var(--c3) 90%,
+                var(--c4) 90%, var(--c4) 95%,
+                var(--c5) 95%, var(--c5) 100%
+            );
+        }
+        .donut-q2 {
+            --c1: #3b82f6; /* 10% */
+            --c2: #10b981; /* 30% */
+            --c3: #f59e0b; /* 30% */
+            --c4: #ef4444; /* 15% */
+            --c5: #9ca3af; /* 5% */
+            background: conic-gradient(
+                var(--c1) 0%, var(--c1) 10%,
+                var(--c2) 10%, var(--c2) 40%,
+                var(--c3) 40%, var(--c3) 70%,
+                var(--c4) 70%, var(--c4) 85%,
+                var(--c5) 85%, var(--c5) 90%
+            );
+        }
+        .donut-chart {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            position: relative;
+        }
+        .donut-hole {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 70px;
+            height: 70px;
+            background-color: white;
+            border-radius: 50%;
+        }
+        .chart-legend span {
+            font-size: 13px;
+        }
+        .btn-analyze {
+            background-color: var(--color-accent);
+            color: white;
+            font-weight: 700;
+            padding: 12px 20px;
+            border-radius: 8px;
+            transition: background-color 0.2s;
+            flex-grow: 1;
+        }
+        /* Hub Voice Specific Styles */
+        .stat-card {
+            /* CHANGED to white background */
+            background-color: var(--color-card-bg); 
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+            flex: 1;
+            min-width: 90px;
+        }
+        .stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #333;
+        }
+        .stat-label {
+            font-size: 13px;
+            color: #777;
+            margin-bottom: 5px;
+        }
+        .ai-summary-item {
+            background-color: var(--color-tab-active-bg); /* Lighter Blue Background for AI */
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            font-size: 15px; /* Slightly larger font */
+            color: #333;
+            display: flex;
+            align-items: flex-start;
+        }
+        .ai-summary-item .font-extrabold {
+            font-size: 16px;
+        }
+        .keyword-bar-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .keyword-bar-label {
+            width: 80px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .keyword-bar {
+            height: 12px;
+            background-color: var(--color-primary);
+            border-radius: 4px;
+            transition: width 0.5s ease-out;
+            margin-left: 10px;
+            opacity: 0.8;
+            flex-grow: 1;
+        }
+        .text-blue-500 {
+            color: #3B82F6;
+        }
+
+        /* Calendar modal must be z-indexed high but only appear when needed */
+        #calendar-modal {
+             position: fixed;
+             top: 0;
+             left: 0;
+             width: 100%;
+             height: 100%;
+             background-color: rgba(0, 0, 0, 0.6); /* Slightly darker overlay */
+             display: none;
+             justify-content: center;
+             align-items: center;
+             z-index: 1000; /* Increased z-index */
+        }
+        .calendar-content {
+            background-color: var(--color-card-bg);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+            max-width: 300px;
+            width: 90%;
+        }
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            font-size: 12px;
+            text-align: center;
+        }
+        .calendar-day {
+            padding: 8px 0;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.1s;
+        }
+        .calendar-day:hover {
+            background-color: #F0F0F0;
+        }
+        .calendar-day.selected {
+            background-color: var(--color-primary);
+            color: white;
+            font-weight: 600;
+        }
+        .calendar-day.weekday {
+            font-weight: 700;
+            color: #777;
+        }
+    </style>
+</head>
+<body class="p-0 sm:p-6">
+    <div id="app-container" class="shadow-2xl overflow-hidden">
+        
+        <!-- ======================= Login Screen (1.png) ======================= -->
+        <div id="login-screen" class="min-h-screen p-6 flex flex-col items-center justify-center transition duration-500">
+            <div class="text-center mb-12">
+                <div class="flex items-center justify-center mb-4">
+                    <!-- LOGO IMAGE REPLACEMENT: New URL applied -->
+                    <img src="https://images2.imgbox.com/dc/a0/SiwigHOg_o.png" alt="SynHub Logo" class="w-[72px] h-[72px] rounded-xl" onerror="this.onerror=null; this.src='https://placehold.co/72x72/3CA2AE/FFFFFF?text=Logo';" />
+                </div>
+                <p class="text-xl text-gray-500 mb-2 font-medium">시너지가 모이는 곳</p>
+                <h2 class="text-5xl font-extrabold" style="color: var(--color-primary);">SynHub</h2>
+            </div>
+            
+            <form id="login-form" class="w-full max-w-sm p-8 flat-card">
+                <div class="mb-6">
+                    <!-- REMOVED required -->
+                    <input type="text" id="employeeId" placeholder="사번" class="flat-input w-full text-lg focus:border-[var(--color-primary)]" />
+                </div>
+                <div class="mb-8">
+                    <!-- REMOVED required -->
+                    <input type="password" id="password" placeholder="비밀번호" class="flat-input w-full text-lg focus:border-[var(--color-primary)]" />
+                </div>
+                <button type="submit" class="login-btn w-full py-4 text-xl rounded-xl transition duration-300">
+                    로그인
+                </button>
+            </form>
+        </div>
+
+        <!-- ======================= Home Screen (2.png, 3.png) ======================= -->
+        <div id="home-screen" class="min-h-screen flex flex-col transition duration-500 hidden">
+            <!-- Header (Flat UI) -->
+            <header class="app-header flex items-center justify-between p-4 sticky top-0 z-10">
+                <div class="flex items-center">
+                    <!-- LOGO IMAGE REPLACEMENT (Small): New URL applied -->
+                    <img src="https://images2.imgbox.com/dc/a0/SiwigHOg_o.png" alt="SynHub Logo" class="w-8 h-8 rounded-md mr-2" onerror="this.onerror=null; this.src='https://placehold.co/32x32/3CA2AE/FFFFFF?text=L';" />
+                    
+                    <h1 class="text-xl font-extrabold" style="color: var(--color-primary);">SynHub</h1>
+                </div>
+                <button id="my-btn-header" class="w-10 h-10 flex items-center justify-center text-white font-semibold rounded-full text-sm shadow-md" style="background-color: var(--color-accent);">MY</button>
+            </header>
+
+            <main class="flex-grow p-4 pb-10">
+                <!-- 혜정님, 환영합니다! (중앙 정렬 및 흰색 배경 추가) -->
+                <div class="welcome-card text-center mb-6 p-4 rounded-xl shadow-sm" style="background-color: var(--color-card-bg);">
+                    <h2 class="text-2xl font-bold text-gray-800">혜정님, 환영합니다!</h2>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-md p-4 mb-8">
+                    <div class="tab-bar flex mb-6 justify-center">
+                        <button id="tab-report" data-tab="report" class="home-tab-btn active" onclick="switchTab('report')">Report</button>
+                        <button id="tab-my" data-tab="my" class="home-tab-btn" onclick="switchTab('my')">MY</button>
+                    </div>
+
+                    <div id="tab-content-report" class="tab-content p-2">
+                        <!-- REPORT CIRCLES LAYOUT: 클러스터 맵 형태로 절대 위치 조정 -->
+                        <div id="report-circles-layout" class="relative" style="height: 350px; max-width: 380px; margin: 0 auto; padding: 20px 0;">
+                            
+                            <!-- 8. 스마트올 (Center Large - blue-400) -->
+                            <div class="report-item-container absolute item-8" style="top: 100px; left: 50%; transform: translate(-50%, 0); z-index: 50;">
+                                <span class="circle-text w-28 h-28 bg-blue-400 text-white text-size-xl">스마트올</span>
+                            </div>
+                            
+                            <!-- 1. 오브레인 (Top Left - red-400) -->
+                            <div class="report-item-container absolute item-1" style="top: 100px; left: 10px; z-index: 10;">
+                                <span class="circle-text w-28 h-28 bg-red-400 text-white text-size-xl">오브레인</span>
+                            </div>
+                            
+                            <!-- 2. 빨간펜 (Upper Left Medium - red-100) -->
+                            <div class="report-item-container absolute opacity-70 item-2" style="top: 50px; left: 100px; z-index: 20;">
+                                <span class="circle-text w-20 h-20 bg-red-100 text-black text-size-md">빨간펜</span>
+                            </div>
+                            
+                            <!-- 3. 온라인 홍보 (Top Medium - blue-100) -->
+                            <div class="report-item-container absolute opacity-70 item-3" style="top: 0px; left: 170px; z-index: 20;">
+                                <span class="circle-text w-24 h-24 bg-blue-100 text-black text-size-lg">온라인 홍보</span>
+                            </div>
+                            
+                            <!-- 4. 링고시티 (Top Right Medium - red-100) -->
+                            <div class="report-item-container absolute opacity-70 item-4" style="top: 60px; right: 10px; z-index: 20;">
+                                <span class="circle-text w-20 h-20 bg-red-100 text-black text-size-md">링고시티</span>
+                            </div>
+                            
+                            <!-- 5. 결합상품 (Bottom Right Medium - blue-100) -->
+                            <div class="report-item-container absolute opacity-70 item-5" style="bottom: 80px; right: 10px; z-index: 20;">
+                                <span class="circle-text w-24 h-24 bg-blue-100 text-black text-size-lg">결합상품</span>
+                            </div>
+                            
+                            <!-- 6. 한글깨치기 (Bottom Small - blue-100) -->
+                            <div class="report-item-container opacity-70 item-6 absolute" style="bottom: 30px; left: 150px; z-index: 20;">
+                                <span class="circle-text w-16 h-16 bg-blue-100 text-black text-size-sm">한글깨치기</span>
+                            </div>
+                            
+                            <!-- 7. 판촉물 (Lower Left Small - red-100) -->
+                            <div class="report-item-container opacity-70 item-7 absolute" style="bottom: 120px; left: 80px; z-index: 20;">
+                                <span class="circle-text w-16 h-16 bg-red-100 text-black text-size-sm">판촉물</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="tab-content-my" class="tab-content hidden p-2">
+                        <!-- MY Content items -->
+                        <div class="mb-6 p-4 rounded-xl" style="background-color: var(--color-background-light);">
+                            <h3 class="text-xl font-bold mb-3 text-gray-700">진행 중 Survey</h3>
+                            <div class="flex items-center justify-between">
+                                <span class="text-3xl font-extrabold" style="color: var(--color-primary);">1건</span>
+                                <button class="px-6 py-3 text-white font-semibold rounded-xl transition duration-300 shadow-lg" style="background-color: var(--color-accent);">지방권 영업 활성화</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Hub-Voice: UPDATED SECTION START -->
+                        <div class="p-4 rounded-xl" style="background-color: var(--color-background-light);">
+                            <h3 class="text-lg font-bold mb-3">Hub-Voice</h3>
+                            
+                            <!-- 1. 의견 건수 (20건 크게 표시, RGB(18, 148, 185) = #1294B9) -->
+                            <div class="mb-4">
+                                <div class="text-3xl font-extrabold text-left" style="color: #1294B9;">20건</div>
+                            </div>
+
+                            <!-- 2. 확인/미확인 Bar Chart (Based on image_29a610.png) -->
+                            <div class="progress-bar-container overflow-hidden rounded-lg mb-3" style="height: 25px; background-color: var(--color-red);">
+                                <!-- 90% (18/20) confirmed (확인) / 10% (2/20) unconfirmed (미확인) -->
+                                <div style="width: 90%; background-color: var(--color-blue);" class="h-full"></div>
+                            </div>
+                            
+                            <!-- 3. Legend (Uses requested terms: 완료/진행중으로 변경하여 이미지와 맞춤) -->
+                            <div class="flex justify-start text-sm font-medium space-x-6">
+                                <div class="flex items-center"><span class="w-2 h-2 rounded-full mr-1" style="background-color: var(--color-blue);"></span> 완료 (18건)</div>
+                                <div class="flex items-center"><span class="w-2 h-2 rounded-full mr-1" style="background-color: var(--color-red);"></span> 진행 중 (2건)</div>
+                            </div>
+                        </div>
+                        <!-- END Hub-Voice: UPDATED SECTION -->
+                    </div>
+                </div>
+
+                <!-- Common Navigation Cards (Syn-Finder button updated) -->
+                <div class="p-2 space-y-3">
+                    <div class="flat-card flex items-center justify-between cursor-pointer p-4" onclick="navigate('syn-finder')">
+                        <div class="flex items-center">
+                            <div class="p-3 bg-gray-100 rounded-lg mr-4"><i data-lucide="search" class="text-[#3b82f6]"></i></div>
+                            <span class="text-lg font-semibold text-gray-700">Syn-Finder</span>
+                        </div>
+                        <i data-lucide="chevron-right" class="text-gray-400"></i>
+                    </div>
+                    <div class="flat-card flex items-center justify-between cursor-pointer p-4" onclick="navigate('hub-voice')">
+                        <div class="flex items-center">
+                            <div class="p-3 bg-gray-100 rounded-lg mr-4"><i data-lucide="volume-2" class="text-[#f97316]"></i></div>
+                            <span class="text-lg font-semibold text-gray-700">Hub-Voice</span>
+                        </div>
+                        <i data-lucide="chevron-right" class="text-gray-400"></i>
+                    </div>
+                    <div class="flat-card flex items-center justify-between cursor-pointer p-4" onclick="navigate('insight-report')">
+                        <div class="flex items-center">
+                            <div class="p-3 bg-gray-100 rounded-lg mr-4"><i data-lucide="bar-chart-2" class="text-[#059669]"></i></div>
+                            <span class="text-lg font-semibold text-gray-700">Insight Report</span>
+                        </div>
+                        <i data-lucide="chevron-right" class="text-gray-400"></i>
+                    </div>
+                </div>
+
+                <div class="mt-8 text-center"><button id="logout-btn" class="text-md text-gray-500 underline hover:text-gray-700 transition font-medium">로그아웃</button></div>
+            </main>
+        </div>
+        
+        <!-- ======================= Syn-Finder Screen (타겟 패널 추천) ======================= -->
+        <div id="syn-finder-screen" class="min-h-screen flex flex-col transition duration-500 hidden">
+            <!-- Header (Flat UI) -->
+            <header class="app-header flex items-center justify-between p-4 sticky top-0 z-10">
+                <div class="flex items-center">
+                    <button onclick="navigate('home')" class="mr-2 text-gray-500 hover:text-gray-700">
+                        <i data-lucide="chevron-left" class="w-6 h-6"></i>
+                    </button>
+                    <h1 class="text-xl font-bold text-gray-800">Syn-Finder</h1>
+                </div>
+                <div class="w-10 h-10"></div> 
+            </header>
+
+            <main class="flex-grow p-4 pb-10 overflow-y-auto">
+                <p class="text-base text-gray-600 mb-6 px-2">
+                    맞춤형 매칭 알고리즘을 통해 원하는 주제의 적합한 교사 패널을 추천합니다.
+                </p>
+
+                <!-- ---------------------- FORM SECTIONS ---------------------- -->
+
+                <!-- 1. 조사형태 -->
+                <div class="form-section">
+                    <div class="form-title">조사형태</div>
+                    <div class="custom-select-wrapper">
+                        <select id="survey-type" class="select-box focus:border-[var(--color-primary)]" onchange="checkSurveySelection()">
+                            <option value="none" selected disabled>조사 형태를 선택해주세요</option>
+                            <option value="온라인 설문조사">온라인 설문조사</option>
+                            <option value="FGI" disabled class="text-gray-400">FGI (준비중)</option>
+                            <option value="전화 인터뷰" disabled class="text-gray-400">전화 인터뷰 (준비중)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 2. 조사 기간 -->
+                <div class="form-section">
+                    <div class="form-title">조사 기간</div>
+                    <div class="select-box-wrapper">
+                        <!-- Display Selected Dates -->
+                        <div id="date-display" class="select-box flex-grow text-gray-500 p-2 cursor-pointer" onclick="showCalendarModal()">
+                            기간을 선택해 주세요
+                        </div>
+                        <!-- Calendar Trigger Button -->
+                        <button onclick="showCalendarModal()" class="px-3 py-1 bg-gray-100 border border-gray-300 rounded-md text-sm font-semibold hover:bg-gray-200">
+                            선택하기
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 3. 조사 주제 -->
+                <div class="form-section">
+                    <div class="form-title">조사 주제</div>
+                    <input type="text" id="survey-subject" placeholder="조사 주제를 입력해 주세요." class="text-input-field flat-input w-full p-2" />
+                </div>
+
+                <!-- 4. 조사 대상 (Toggle Buttons) -->
+                <div class="form-section">
+                    <div class="form-title">조사 대상</div>
+                    <div class="flex space-x-3">
+                        <button id="target-kyomun" class="toggle-btn" onclick="toggleTarget('kyomun')">교문</button>
+                        <button id="target-mirae" class="toggle-btn" onclick="toggleTarget('mirae')">미래</button>
+                        <button id="target-online" class="toggle-btn" onclick="toggleTarget('online')">온라인</button>
+                    </div>
+                </div>
+
+                <!-- 5. 세부조건 (Dropdowns) -->
+                <div class="form-section">
+                    <div class="form-title">세부조건 (선택 사항)</div>
+                    <div class="space-y-3">
+                        <!-- 경력 (Updated options) -->
+                        <div class="custom-select-wrapper">
+                            <select class="select-box focus:border-[var(--color-primary)]">
+                                <option value="exp">경력</option>
+                                <option>전체</option>
+                                <option>1년 미만</option>
+                                <option>1년 이상 ~ 5년 미만</option>
+                                <option>5년 이상</option>
+                            </select>
+                        </div>
+                        <!-- 직급 (Updated options) -->
+                        <div class="custom-select-wrapper">
+                            <select class="select-box focus:border-[var(--color-primary)]">
+                                <option value="rank">직급</option>
+                                <option>전체</option>
+                                <option>판매직급</option>
+                                <option>관리자직급</option>
+                            </select>
+                        </div>
+                        <!-- 실적 (Updated options) -->
+                        <div class="custom-select-wrapper">
+                            <select class="select-box focus:border-[var(--color-primary)]">
+                                <option value="perf">실적</option>
+                                <option>전체</option>
+                                <option>우수</option>
+                                <option>보통</option>
+                                <option>개선 필요</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 6. 조사인원 (Number Input) -->
+                <div class="form-section">
+                    <div class="form-title">조사인원</div>
+                    <div class="flex items-center space-x-2">
+                        <input type="number" id="requested-count" min="1" placeholder="숫자를 입력하세요" class="text-input-field flat-input w-full p-2 text-right" />
+                        <span class="text-lg font-semibold text-gray-700">명</span>
+                    </div>
+                </div>
+
+                <!-- 7. 설문링크 (URL Input) -->
+                <div class="form-section">
+                    <div class="form-title">설문링크</div>
+                    <input type="url" id="survey-link" placeholder="설문조사 URL을 입력해 주세요." class="text-input-field flat-input w-full p-2" />
+                </div>
+                
+                <!-- Bottom CTA Button -->
+                <button id="extract-button" onclick="startPanelExtraction()">
+                    타겟 추출하기
+                </button>
+
+            </main>
+        </div>
+        
+        <!-- ======================= AI Loading Screen ======================= -->
+        <div id="loading-screen" class="min-h-screen flex flex-col justify-center items-center transition duration-500 hidden" style="background-color: var(--color-background-light);">
+            <div class="ai-spinner"></div>
+            <p class="text-xl font-semibold text-gray-700 mt-4 px-8 text-center">
+                AI 맞춤형 매칭 알고리즘이 <br> 적합한 패널을 찾고 있습니다
+            </p>
+            <p class="text-sm text-gray-500 mt-2">잠시만 기다려 주세요...</p>
+        </div>
+        
+        <!-- ======================= Result Screen (맞춤 추천 패널) ======================= -->
+        <div id="result-screen" class="min-h-screen flex flex-col transition duration-500 hidden">
+             <!-- Header (Flat UI) -->
+            <header class="app-header flex items-center justify-between p-4 sticky top-0 z-10">
+                <div class="flex items-center">
+                    <button onclick="navigate('syn-finder')" class="mr-2 text-gray-500 hover:text-gray-700">
+                        <i data-lucide="chevron-left" class="w-6 h-6"></i>
+                    </button>
+                    <h1 class="text-xl font-bold text-gray-800">맞춤 추천 패널</h1>
+                </div>
+                <div class="w-10 h-10"></div> 
+            </header>
+
+            <main class="flex-grow p-4 pb-10 overflow-y-auto">
+                
+                <!-- Top Controls: Select All -->
+                <div class="flex justify-between items-center bg-gray-50 p-3 rounded-lg mb-4 shadow-sm">
+                    
+                    <!-- Left: Select All Checkbox -->
+                    <div class="flex items-center space-x-2">
+                        <input type="checkbox" id="select-all-panels" class="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500" onclick="toggleAllPanels()">
+                        <label for="select-all-panels" class="text-base font-semibold text-gray-700">전체 선택</label>
+                    </div>
+
+                    <!-- Right: Total Count -->
+                    <div class="flex items-center space-x-3">
+                        <h3 class="text-sm font-bold text-gray-700">
+                            총 (<span id="total-extracted-count">0</span>명)
+                        </h3>
+                    </div>
+                </div>
+
+                <div id="panel-list-container" class="space-y-4">
+                    <!-- Panel list and group headers will be dynamically inserted here -->
+                </div>
+                
+                <!-- UPDATED: Button class changed to btn-proceed -->
+                <button onclick="showConfirmationModal()" class="mt-8 px-6 py-3 btn-proceed w-full">
+                    진행하기
+                </button>
+            </main>
+        </div>
+        
+        <!-- ======================= Sent Screen (전송 완료) ======================= -->
+        <div id="sent-screen" class="min-h-screen flex flex-col justify-center items-center transition duration-500 hidden" style="background-color: var(--color-background-light);">
+            <i data-lucide="check-circle" class="w-20 h-20 text-green-500 mb-6"></i>
+            <p class="text-xl font-semibold text-gray-700 mt-4 px-8 text-center">
+                요청하신 <span id="survey-type-output" class="font-extrabold" style="color: var(--color-primary);">[온라인 설문조사]</span> 가(이) 패널들에게 전송되었습니다.
+            </p>
+            
+            <div class="sent-screen-buttons">
+                <!-- 메인으로 버튼 -->
+                <button onclick="navigate('home')" class="btn-main-home text-base font-semibold">
+                    메인으로
+                </button>
+                <!-- 결과보기 버튼 -->
+                <button onclick="navigate('survey-result')" class="btn-view-results text-base font-semibold">
+                    결과보기
+                </button>
+            </div>
+        </div>
+        
+        <!-- ======================= Survey Result Screen (NEW) ======================= -->
+        <div id="survey-result-screen" class="min-h-screen flex flex-col transition duration-500 hidden">
+            <!-- Header (Flat UI) -->
+            <header class="app-header flex items-center justify-between p-4 sticky top-0 z-10">
+                <div class="flex items-center">
+                    <button onclick="navigate('home')" class="mr-2 text-gray-500 hover:text-gray-700">
+                        <i data-lucide="chevron-left" class="w-6 h-6"></i>
+                    </button>
+                    <h1 class="text-xl font-bold text-gray-800">서베이 결과</h1>
+                </div>
+                <div class="w-10 h-10"></div> 
+            </header>
+
+            <main class="flex-grow p-4 pb-10 overflow-y-auto">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">독서교육 관심도 조사 결과</h2>
+                
+                <!-- 1) 응답률 (막대 그래프) -->
+                <div class="chart-card">
+                    <div class="chart-title mb-4">응답률</div>
+                    <div class="text-gray-700 text-sm mb-2">
+                        요청 인원: <span id="req-count-result" class="font-semibold">200명</span>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div id="response-bar" class="progress-bar" style="width: 80%;">80% 완료 (160명)</div>
+                    </div>
+                </div>
+
+                <!-- 2) 결과 요약 시작 -->
+                <div class="chart-card">
+                    <div class="chart-title mt-0">결과</div>
+                    
+                    <!-- Q1 결과 요약 -->
+                    <p class="text-base font-bold text-gray-700 mb-4">
+                        Q1. 귀하께서는 자녀 독서교육(국어학원, 독서학원, 논술학원 등)에 관심이 얼마나 있으신가요?
+                    </p>
+                    
+                    <div class="flex justify-between items-center mb-6 pb-6 border-b border-gray-100">
+                        <!-- Chart -->
+                        <div class="donut-chart donut-q1">
+                            <div class="donut-hole"></div>
+                        </div>
+                        <!-- Legend -->
+                        <div class="flex flex-col space-y-1 chart-legend w-3/5">
+                            <div class="flex justify-between items-center">
+                                <span>① 매우 관심이 있다</span>
+                                <span class="font-bold text-blue-600">50%</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span>② 관심이 있는 편이다</span>
+                                <span class="font-bold text-green-600">30%</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span>③ 보통이다</span>
+                                <span class="font-bold text-yellow-600">10%</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span>④ 관심이 없는 편이다</span>
+                                <span class="font-bold text-red-600">5%</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span>⑤ 전혀 관심이 없다</span>
+                                <span class="font-bold text-gray-600">5%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Q2 결과 요약 -->
+                    <p class="text-base font-bold text-gray-700 mb-4">
+                        Q2. 초등학생의 독서교육이 필요하다고 생각하시나요?
+                    </p>
+                    
+                    <div class="flex justify-between items-center">
+                        <!-- Chart -->
+                        <div class="donut-chart donut-q2">
+                            <div class="donut-hole"></div>
+                        </div>
+                        <!-- Legend -->
+                        <div class="flex flex-col space-y-1 chart-legend w-3/5">
+                            <div class="flex justify-between items-center">
+                                <span>① 매우 필요하다</span>
+                                <span class="font-bold text-blue-600">10%</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span>② 필요하다</span>
+                                <span class="font-bold text-green-600">30%</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span>③ 보통이다</span>
+                                <span class="font-bold text-yellow-600">30%</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span>④ 필요하지 않다</span>
+                                <span class="font-bold text-red-600">15%</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span>⑤ 매우 필요하지 않다</span>
+                                <span class="font-bold text-gray-600">5%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex space-x-3 mt-4">
+                    <button onclick="showAlertModal('응답자별 분석 기능을 구현해야 합니다.')" class="btn-analyze">
+                        응답자별 분석
+                    </button>
+                    <button onclick="navigate('home')" class="btn-main-home text-base">
+                        홈으로 돌아가기
+                    </button>
+                </div>
+            </main>
+        </div>
+        
+        <!-- ======================= Hub-Voice Screen (NEW) ======================= -->
+        <div id="hub-voice-screen" class="min-h-screen flex flex-col transition duration-500 hidden">
+            <!-- Header (Flat UI) -->
+            <header class="app-header flex items-center justify-between p-4 sticky top-0 z-10">
+                <div class="flex items-center">
+                    <button onclick="navigate('home')" class="mr-2 text-gray-500 hover:text-gray-700">
+                        <i data-lucide="chevron-left" class="w-6 h-6"></i>
+                    </button>
+                    <h1 class="text-xl font-bold text-gray-800">Hub-voice</h1>
+                </div>
+                <div class="w-10 h-10"></div> 
+            </header>
+
+            <main class="flex-grow p-4 pb-10 overflow-y-auto">
+                <!-- Header Description -->
+                <div class="mb-6 px-2">
+                    <p class="text-sm font-extrabold text-gray-800 mb-1">
+                        '현장의 지혜＇를 엿보세요.
+                    </p>
+                    <p class="text-sm text-gray-600">
+                        현장의 의미 있는 제안과 인사이트를 확인하실 수 있습니다.
+                    </p>
+                </div>
+
+                <!-- 2. 의견 통계 카드 -->
+                <div class="flex justify-between space-x-3 mb-8">
+                    <!-- 의견 건수 -->
+                    <div class="stat-card">
+                        <div class="stat-label">의견 건수</div>
+                        <div class="stat-value flex justify-center flex-col items-center">
+                            <span>20건</span>
+                            <span class="text-xs text-red-500 mt-1">▲12</span>
+                        </div>
+                    </div>
+                    <!-- 확인 건수 -->
+                    <div class="stat-card">
+                        <div class="stat-label">확인 건수</div>
+                        <div class="stat-value">18건</div>
+                    </div>
+                    <!-- 미확인 건수 -->
+                    <div class="stat-card">
+                        <div class="stat-label">미확인 건수</div>
+                        <div class="stat-value">2건</div>
+                    </div>
+                </div>
+                
+                <!-- 3. 요약 메뉴 (Existing Content Below) -->
+                <div class="chart-card p-4 mb-6">
+                    <div class="form-title mt-0">요약</div>
+                    <!-- 4.1) 스마트올 언급 분석 (막대 그래프) -->
+                    <p class="text-base font-semibold text-gray-700 mb-4">
+                        <span class="font-extrabold text-blue-500">스마트올</span> 언급이 가장 많아요.
+                    </p>
+                    
+                    <div class="space-y-3">
+                        <div class="keyword-bar-container">
+                            <span class="keyword-bar-label">스마트올</span>
+                            <div class="keyword-bar" style="width: 75%;"></div> <!-- 15/20 = 75% -->
+                            <span class="text-sm font-semibold ml-2">15</span>
+                        </div>
+                        <div class="keyword-bar-container">
+                            <span class="keyword-bar-label">판촉물</span>
+                            <div class="keyword-bar" style="width: 35%;"></div> <!-- 7/20 = 35% -->
+                            <span class="text-sm font-semibold ml-2">7</span>
+                        </div>
+                        <div class="keyword-bar-container">
+                            <span class="keyword-bar-label">결합상품</span>
+                            <div class="keyword-bar" style="width: 10%;"></div> <!-- 2/20 = 10% -->
+                            <span class="text-sm font-semibold ml-2">2</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4.2) 스마트올 의견 목록 -->
+                <div class="chart-card mb-6">
+                    <p class="text-base font-semibold text-gray-700 mb-4">
+                        <span class="font-extrabold text-blue-500">스마트올</span>에서 이런 의견이 있었어요.
+                    </p>
+                    
+                    <div class="space-y-4 text-sm">
+                        <div class="border-l-4 border-gray-300 pl-3 py-1">
+                            <span class="font-semibold text-blue-500">스마트올</span> 초등1학년 교과서로 상담하고 싶어요.<br>
+                            교과서 목차와 맞는 콘텐츠표가 필요해요.
+                        </div>
+                        <div class="border-l-4 border-gray-300 pl-3 py-1">
+                            <span class="font-semibold text-blue-500">스마트올</span> 판촉물 필요해요. 천재 밀크티에서는 이렇게 용품을 현장에서 나눠주고 있어요.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4.3) 미확인 의견 메뉴 (AI 요약) -->
+                <div class="chart-card p-4">
+                    <div class="form-title mb-3">미확인 의견</div>
+                
+                    <div class="space-y-3">
+                        <!-- AI 요약 1 -->
+                        <div class="ai-summary-item">
+                            <i data-lucide="lightbulb" class="w-4 h-4 text-yellow-600 mr-2 mt-1 flex-shrink-0"></i>
+                            <div class="text-sm">
+                                <span class="font-extrabold mr-1">AI 요약:</span> 스마트올 뫼비우스 결합상품 우수사례<br>
+                                <span class="text-xs text-gray-500 block">유치원 여러 곳 판매, 기관형으로도 출시 요청</span>
+                            </div>
+                        </div>
+                        <!-- AI 요약 2 -->
+                        <div class="ai-summary-item">
+                            <i data-lucide="lightbulb" class="w-4 h-4 text-yellow-600 mr-2 mt-1 flex-shrink-0"></i>
+                            <div class="text-sm">
+                                <span class="font-extrabold mr-1">AI 요약:</span> 교원 빨간펜 홍보 부스 비교<br>
+                                <span class="text-xs text-gray-500 block">오래된 집기 및 유아동존 집기 개선 요청</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+        
+        <!-- ======================= Insight Report Screen (NEW) ======================= -->
+        <div id="insight-report-screen" class="min-h-screen flex flex-col transition duration-500 hidden">
+            <!-- Header (Flat UI) -->
+            <header class="app-header flex items-center justify-between p-4 sticky top-0 z-10">
+                <div class="flex items-center">
+                    <button onclick="navigate('home')" class="mr-2 text-gray-500 hover:text-gray-700">
+                        <i data-lucide="chevron-left" class="w-6 h-6"></i>
+                    </button>
+                    <h1 class="text-xl font-bold text-gray-800">INSIGHT REPORT</h1>
+                </div>
+                <div class="w-10 h-10"></div> 
+            </header>
+
+            <main class="flex-grow p-4 pb-10 overflow-y-auto">
+                <p class="text-base text-gray-600 mb-6 px-2">
+                    이번 달 INSIGHT REPORT에서 AI가 정리한 핵심 인사이트를 확인하세요.
+                </p>
+
+                <!-- 1. KEYWORD 언급량 분석 (Reusing Report Circles for visual emphasis) -->
+                <div class="chart-card mb-6">
+                    <div class="chart-title">KEYWORD 언급량 분석</div>
+                    <div id="report-circles-layout-insight" class="flex flex-wrap justify-center items-center">
+                        <!-- Reusing the Circle structure -->
+                        <div class="report-item-container"><span class="circle-text w-24 h-24 bg-red-400 text-white text-size-lg">오브레인</span></div>
+                        <div class="report-item-container opacity-70"><span class="circle-text w-20 h-20 bg-red-100 text-black text-size-md">빨간펜</span></div>
+                        <div class="report-item-container opacity-70"><span class="circle-text w-24 h-24 bg-blue-100 text-black text-size-lg">온라인 홍보</span></div>
+                        <div class="report-item-container opacity-70"><span class="circle-text w-20 h-20 bg-red-100 text-black text-size-md">링고시티</span></div>
+                        <div class="report-item-container opacity-70"><span class="circle-text w-24 h-24 bg-blue-100 text-black text-size-lg">결합상품</span></div>
+                        <div class="report-item-container"><span class="circle-text w-28 h-28 bg-blue-400 text-white text-size-xl">스마트올</span></div>
+                    </div>
+                </div>
+
+                <!-- 2. Feedback Map (Donut Chart) -->
+                <div class="chart-card mb-6">
+                    <div class="chart-title">Feedback Map</div>
+                    
+                    <div class="flex justify-between items-center">
+                        <!-- Stats -->
+                        <div class="flex flex-col space-y-2 text-sm font-semibold w-2/5">
+                            <p class="flex justify-between"><span>문제 제기</span><span class="text-red-500">78건</span></p>
+                            <p class="flex justify-between"><span>개선 제안</span><span class="text-yellow-600">121건</span></p>
+                            <p class="flex justify-between"><span>우수 사례</span><span class="text-green-500">252건</span></p>
+                        </div>
+                        <!-- Donut Chart (Total: 451) -->
+                        <div class="donut-chart" style="width: 120px; height: 120px; /* Feedback Map Colors */
+                            --c1: #ef4444; /* Problem 78/451 = 17.3% */
+                            --c2: #f59e0b; /* Suggestion 121/451 = 26.8% */
+                            --c3: #10b981; /* Case 252/451 = 55.9% */
+                            background: conic-gradient(
+                                var(--c1) 0%, var(--c1) 17.3%,
+                                var(--c2) 17.3%, var(--c2) 44.1%, /* 17.3 + 26.8 = 44.1 */
+                                var(--c3) 44.1%, var(--c3) 100%
+                            );">
+                            <div class="donut-hole" style="width: 80px; height: 80px;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Timing Scope (Line Graph Simulation) -->
+                <div class="chart-card mb-6">
+                    <div class="flex justify-between items-center mb-3">
+                        <button><i data-lucide="chevron-left" class="w-5 h-5 text-gray-500"></i></button>
+                        <div class="chart-title mb-0">Timing Scope - 12월</div>
+                        <button><i data-lucide="chevron-right" class="w-5 h-5 text-gray-500"></i></button>
+                    </div>
+                    
+                    <div class="relative h-40 w-full" style="padding: 10px 0;">
+                        <!-- Simple Line Graph Simulation (using points/dots) -->
+                        <div class="absolute inset-0 flex justify-around items-end">
+                            <!-- This map logic uses JSX syntax which is invalid in pure HTML. Using plain HTML mock for stability -->
+                            <div class="flex flex-col items-center justify-end" style="height: 100%; width: 5%;"><div class="w-2 h-2 rounded-full" style="background-color: var(--color-primary); margin-bottom: 25px;"></div><span class="text-xs text-gray-500 -mb-4">1</span></div>
+                            <div class="flex flex-col items-center justify-end" style="height: 100%; width: 5%;"><div class="w-2 h-2 rounded-full" style="background-color: var(--color-primary); margin-bottom: 45px;"></div><span class="text-xs text-gray-500 -mb-4">2</span></div>
+                            <div class="flex flex-col items-center justify-end" style="height: 100%; width: 5%;"><div class="w-2 h-2 rounded-full" style="background-color: var(--color-primary); margin-bottom: 30px;"></div><span class="text-xs text-gray-500 -mb-4">3</span></div>
+                            <div class="flex flex-col items-center justify-end" style="height: 100%; width: 5%;"><div class="w-2 h-2 rounded-full" style="background-color: var(--color-primary); margin-bottom: 50px;"></div><span class="text-xs text-gray-500 -mb-4">4</span></div>
+                            <div class="flex flex-col items-center justify-end" style="height: 100%; width: 5%;"><div class="w-2 h-2 rounded-full" style="background-color: var(--color-primary); margin-bottom: 70px;"></div><span class="text-xs text-gray-500 -mb-4">5</span></div>
+                            <div class="flex flex-col items-center justify-end" style="height: 100%; width: 5%;"><div class="w-2 h-2 rounded-full" style="background-color: var(--color-primary); margin-bottom: 55px;"></div><span class="text-xs text-gray-500 -mb-4">6</span></div>
+                            <div class="flex flex-col items-center justify-end" style="height: 100%; width: 5%;"><div class="w-2 h-2 rounded-full" style="background-color: var(--color-primary); margin-bottom: 40px;"></div><span class="text-xs text-gray-500 -mb-4">7</span></div>
+                            <div class="flex flex-col items-center justify-end" style="height: 100%; width: 5%;"><div class="w-2 h-2 rounded-full" style="background-color: var(--color-primary); margin-bottom: 60px;"></div><span class="text-xs text-gray-500 -mb-4">8</span></div>
+                            <div class="flex flex-col items-center justify-end" style="height: 100%; width: 5%;"><div class="w-2 h-2 rounded-full" style="background-color: var(--color-primary); margin-bottom: 80px;"></div><span class="text-xs text-gray-500 -mb-4">9</span></div>
+                            <div class="flex flex-col items-center justify-end" style="height: 100%; width: 5%;"><div class="w-2 h-2 rounded-full" style="background-color: var(--color-primary); margin-bottom: 95px;"></div><span class="text-xs text-gray-500 -mb-4">10</span></div>
+                            <div class="flex flex-col items-center justify-end" style="height: 100%; width: 5%;"><div class="w-2 h-2 rounded-full" style="background-color: var(--color-primary); margin-bottom: 85px;"></div><span class="text-xs text-gray-500 -mb-4">11</span></div>
+                            <div class="flex flex-col items-center justify-end" style="height: 100%; width: 5%;"><div class="w-2 h-2 rounded-full" style="background-color: var(--color-primary); margin-bottom: 65px;"></div><span class="text-xs text-gray-500 -mb-4">12</span></div>
+                            <div class="flex flex-col items-center justify-end" style="height: 100%; width: 5%;"><div class="w-2 h-2 rounded-full" style="background-color: var(--color-primary); margin-bottom: 45px;"></div><span class="text-xs text-gray-500 -mb-4">13</span></div>
+                            <div class="flex flex-col items-center justify-end" style="height: 100%; width: 5%;"><div class="w-2 h-2 rounded-full" style="background-color: var(--color-primary); margin-bottom: 50px;"></div><span class="text-xs text-gray-500 -mb-4">14</span></div>
+                            <div class="flex flex-col items-center justify-end" style="height: 100%; width: 5%;"><div class="w-2 h-2 rounded-full" style="background-color: var(--color-primary); margin-bottom: 30px;"></div><span class="text-xs text-gray-500 -mb-4">15</span></div>
+                        </div>
+                        <div class="absolute top-0 w-full border-t border-dashed border-gray-300"></div>
+                        <div class="absolute bottom-0 w-full border-t border-gray-300"></div>
+                    </div>
+                </div>
+
+                <!-- 4. AI Synergy Pick -->
+                <div class="chart-card mb-6">
+                    <div class="chart-title">AI Synergy Pick</div>
+                    <div class="space-y-4 text-sm">
+                        <p class="border-l-4 border-gray-300 pl-3 py-1">
+                            <span class="font-bold">수업을 하다 보니 아이가 반복 학습에 익숙해지고,</span><br/>
+                            그 변화를 느낀 학부모님이 먼저 지인에게 뫼비우스를 소개하셨어요. 설명보다 실제 학습 경험이 자연스럽게 가입으로 이어진 사례였습니다.
+                        </p>
+                        <p class="border-l-4 border-gray-300 pl-3 py-1">
+                            <span class="font-bold">기존 패드가 느려서 학습 흐름이 자주 끊기는 게 보여</span><br/>
+                            수업 집중도를 기준으로 패드 교체를 권해드렸어요. 교체 후 반응 속도가 개선되면서 아이 학습 몰입도가 확실히 달라진 사례입니다.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 5. AI 요약 -->
+                <div class="chart-card">
+                    <div class="chart-title">AI 요약</div>
+                    <ul class="list-disc list-inside space-y-2 text-sm text-gray-700">
+                        <li>이번 달은 <span class="font-bold text-blue-500">뫼비우스 출시 첫 달</span>로 가장 언급이 많았음</li>
+                        <li>특히 뫼비우스 가입 우수 사례가 가장 많이 올라왔으며, <span class="font-bold">미래 부문 의견이 80%</span>에 달함</li>
+                        <li>우수 사례로는 친구 소개, 패드 교체 상담, 유치원 판매 사례가 있음</li>
+                    </ul>
+                </div>
+            </main>
+        </div>
+        
+        <!-- ======================= Calendar Modal (Hidden by Default) ======================= -->
+        <div id="calendar-modal" class="modal">
+            <div class="calendar-content">
+                <div class="calendar-header">
+                    <button onclick="changeMonth(-1)"><i data-lucide="chevron-left" class="w-5 h-5"></i></button>
+                    <h3 id="month-year" class="text-lg font-bold"></h3>
+                    <button onclick="changeMonth(1)"><i data-lucide="chevron-right" class="w-5 h-5"></i></button>
+                </div>
+                <div class="calendar-grid mb-3">
+                    <span class="calendar-day weekday">일</span>
+                    <span class="calendar-day weekday">월</span>
+                    <span class="calendar-day weekday">화</span>
+                    <span class="calendar-day weekday">수</span>
+                    <span class="calendar-day weekday">목</span>
+                    <span class="calendar-day weekday">금</span>
+                    <span class="calendar-day weekday">토</span>
+                </div>
+                <div id="calendar-days" class="calendar-grid">
+                    <!-- Days will be inserted here by JS -->
+                </div>
+                <div class="mt-4 flex justify-between">
+                    <button onclick="closeCalendarModal()" class="px-3 py-1.5 bg-gray-200 rounded-md text-sm">취소</button>
+                    <button id="calendar-select-btn" onclick="selectDateRange()" disabled class="px-3 py-1.5 bg-gray-400 text-white rounded-md text-sm disabled:opacity-50">선택 완료</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ======================= Confirmation Modal ======================= -->
+        <div id="confirmation-modal" class="confirmation-modal">
+            <div class="confirmation-content">
+                <p class="text-lg font-semibold text-gray-800">서베이를 진행하시겠습니까?</p>
+                <div class="modal-buttons">
+                    <button class="btn-prev" onclick="closeConfirmationModal()">이전</button>
+                    <button class="btn-confirm" onclick="confirmSurveyProceed()">확인</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ======================= Info/Alert Modal (Replaces standard alert) ======================= -->
+        <div id="info-modal" class="confirmation-modal">
+            <div class="confirmation-content">
+                <p id="info-modal-message" class="text-lg font-semibold text-gray-800 mb-6"></p>
+                <div class="modal-buttons">
+                    <!-- Changed background to gray for a neutral info message -->
+                    <button class="btn-confirm bg-gray-400 hover:bg-gray-500" onclick="closeInfoModal()">확인</button>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+    <script>
+        // Use Lucide Icons for dynamic rendering (after DOM is loaded)
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        });
+
+        // ======================= MOCK DATA & GENERATOR =======================
+        
+        const MOCK_NAMES = [
+            "김민지", "이서준", "박하윤", "최도현", "정지원", "강민재", "조서연", "윤지호", "장채원", "임서우",
+            "오태준", "한지민", "신준서", "권나연", "서준영", "김유진", "이승민", "박예은", "정세현", "강현우"
+        ];
+
+        // Extended mock data for better simulation of requested count
+        const extendedMockPanelData = {
+            '교문': [],
+            '미래': [],
+            '온라인': []
+        };
+        
+        // Populate mock data up to 100 panels per group for flexibility
+        for(let i = 0; i < 100; i++) {
+            const nameIndex = i % MOCK_NAMES.length;
+            const name = MOCK_NAMES[nameIndex];
+            
+            extendedMockPanelData['교문'].push({ id: `K${1000 + i}`, name: name, region: '서울', rank: (i%2==0 ? '판매직급' : '관리자직급'), exp: `${(i % 5) + 1}년` });
+            extendedMockPanelData['미래'].push({ id: `M${2000 + i}`, name: name, region: '부산', rank: (i%3==0 ? '관리자직급' : '판매직급'), exp: `${(i % 10) + 1}년` });
+            extendedMockPanelData['온라인'].push({ id: `O${3000 + i}`, name: name, region: '대구', rank: '판매직급', exp: `${(i % 4) + 1}년` });
+        }
+
+
+        function generatePanelList(targets, requiredCount) {
+            const container = document.getElementById('panel-list-container');
+            container.innerHTML = '';
+            let totalExtracted = 0;
+
+            // Panels are distributed evenly among selected target groups
+            const panelsPerGroup = Math.floor(requiredCount / targets.length);
+            let remainder = requiredCount % targets.length;
+
+            targets.forEach(groupName => {
+                let count = panelsPerGroup;
+                if (remainder > 0) {
+                    count++;
+                    remainder--;
+                }
+                
+                const groupData = extendedMockPanelData[groupName] || [];
+                const extractedGroup = groupData.slice(0, Math.min(count, groupData.length)); 
+                
+                // Group Header (Modified to include individual toggle button)
+                const header = document.createElement('div');
+                header.className = 'target-group-header';
+                header.id = `header-${groupName}`;
+                header.innerHTML = `
+                    <span class="mr-4">${groupName} (<span class="group-count">${extractedGroup.length}</span>명 추출)</span>
+                    <button class="hide-toggle-button group-toggle-btn" data-group="${groupName}" onclick="toggleGroupListVisibility('${groupName}')">
+                        패널 목록 숨기기
+                    </button>`;
+                container.appendChild(header);
+
+                totalExtracted += extractedGroup.length;
+
+                // Panel List
+                const groupList = document.createElement('div');
+                groupList.id = `list-${groupName}`;
+                groupList.className = 'group-panel-list space-y-2';
+                
+                extractedGroup.forEach(panel => {
+                    const item = document.createElement('div');
+                    item.className = 'result-list-item-panel';
+                    item.innerHTML = `
+                        <div class="flex flex-col flex-grow mr-4">
+                            <h4 class="text-lg">${panel.name}</h4>
+                            <p class="result-list-detail">
+                                지역: ${panel.region} / 직급: ${panel.rank} / 경력: ${panel.exp}
+                            </p>
+                        </div>
+                        <input type="checkbox" class="panel-checkbox w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500" checked>
+                    `;
+                    groupList.appendChild(item);
+                });
+                container.appendChild(groupList);
+            });
+
+            // Update statistics
+            document.getElementById('total-extracted-count').textContent = totalExtracted;
+            
+            // Set initial state for survey result screen (80% completion)
+            updateSurveyResultStats(requiredCount, Math.round(requiredCount * 0.8));
+
+            // Ensure the select-all checkbox reflects the initial checked state
+            updateMasterCheckboxState();
+
+            return totalExtracted;
+        }
+        
+        function updateSurveyResultStats(requested, completed) {
+            const percentage = Math.round((completed / requested) * 100);
+            
+            document.getElementById('req-count-result').textContent = `${requested}명`;
+            
+            const progressBar = document.getElementById('response-bar');
+            if (progressBar) {
+                 progressBar.style.width = `${percentage}%`;
+                 progressBar.textContent = `${percentage}% 완료 (${completed}명)`;
+            }
+        }
+
+
+        // ======================= GLOBAL STATE & NAVIGATION =======================
+        
+        const loginScreen = document.getElementById('login-screen');
+        const homeScreen = document.getElementById('home-screen');
+        const synFinderScreen = document.getElementById('syn-finder-screen');
+        const loadingScreen = document.getElementById('loading-screen');
+        const resultScreen = document.getElementById('result-screen');
+        const sentScreen = document.getElementById('sent-screen'); 
+        const surveyResultScreen = document.getElementById('survey-result-screen'); 
+        const hubVoiceScreen = document.getElementById('hub-voice-screen'); 
+        const insightReportScreen = document.getElementById('insight-report-screen'); // NEW
+        const loginForm = document.getElementById('login-form');
+        const logoutBtn = document.getElementById('logout-btn');
+        const myBtnHeader = document.getElementById('my-btn-header');
+        const confirmationModal = document.getElementById('confirmation-modal');
+
+        let activeTab = 'report';
+        let currentPage = 'login';
+        
+        let lastRequestedCount = 200; 
+        let lastSelectedTargets = ['교문', '미래']; 
+        let isListVisible = true;
+        let lastSurveyType = '온라인 설문조사'; 
+
+        /** Info/Alert Modal Logic (Replaces standard alert) */
+        window.showAlertModal = function(message) {
+            document.getElementById('info-modal-message').textContent = message;
+            document.getElementById('info-modal').style.display = 'flex';
+        }
+
+        window.closeInfoModal = function() {
+            document.getElementById('info-modal').style.display = 'none';
+        }
+
+        /** Navigation Logic */
+        function navigate(screenName) {
+            currentPage = screenName;
+            
+            loginScreen.classList.add('hidden');
+            homeScreen.classList.add('hidden');
+            synFinderScreen.classList.add('hidden');
+            loadingScreen.classList.add('hidden');
+            resultScreen.classList.add('hidden');
+            sentScreen.classList.add('hidden');
+            surveyResultScreen.classList.add('hidden'); 
+            hubVoiceScreen.classList.add('hidden'); 
+            insightReportScreen.classList.add('hidden'); // NEW
+
+            const targetScreen = document.getElementById(`${screenName}-screen`);
+            if (targetScreen) {
+                targetScreen.classList.remove('hidden');
+            }
+
+            document.getElementById('app-container').style.background = 'var(--color-background-light)';
+            
+            if (screenName === 'home') {
+                initializeTabStyle();
+            }
+            
+            // Ensure Lucide icons are rendered if needed (especially for the result screen)
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        }
+        window.navigate = navigate;
+        
+        /** Start AI Extraction Process */
+        window.startPanelExtraction = function() {
+            // Read current form inputs for target groups and count
+            const requestedInput = document.getElementById('requested-count');
+            lastRequestedCount = parseInt(requestedInput.value) || 0;
+            
+            // Validation: Check if a number is entered
+            if (lastRequestedCount <= 0 || isNaN(lastRequestedCount)) {
+                showAlertModal('조사인원수를 1명 이상 입력해 주세요.');
+                requestedInput.focus();
+                return;
+            }
+
+            // Get actively selected target buttons (교문, 미래, 온라인)
+            const targetButtons = document.querySelectorAll('#syn-finder-screen .toggle-btn.active');
+            lastSelectedTargets = Array.from(targetButtons).map(btn => btn.textContent);
+            
+            if (lastSelectedTargets.length === 0) {
+                showAlertModal('조사 대상을 하나 이상 선택해 주세요.');
+                return;
+            }
+            
+            const surveyTypeSelect = document.getElementById('survey-type');
+            if (surveyTypeSelect.value === 'none') {
+                 showAlertModal('조사 형태를 선택해 주세요.');
+                 return;
+            }
+            lastSurveyType = surveyTypeSelect.options[surveyTypeSelect.selectedIndex].text;
+
+
+            // Scroll to top when starting extraction
+            document.querySelector('#syn-finder-screen main').scrollTo(0, 0);
+
+            navigate('loading');
+
+            setTimeout(() => {
+                generatePanelList(lastSelectedTargets, lastRequestedCount);
+                isListVisible = true;
+                navigate('result');
+            }, 3000); 
+        }
+
+        // ======================= RESULT SCREEN LOGIC =======================
+
+        window.toggleAllPanels = function() {
+            const masterCheckbox = document.getElementById('select-all-panels');
+            const panelCheckboxes = document.querySelectorAll('.panel-checkbox');
+            
+            panelCheckboxes.forEach(checkbox => {
+                checkbox.checked = masterCheckbox.checked;
+            });
+        }
+        
+        function updateMasterCheckboxState() {
+            const masterCheckbox = document.getElementById('select-all-panels');
+            const panelCheckboxes = document.querySelectorAll('.panel-checkbox');
+            
+            if (panelCheckboxes.length === 0) {
+                masterCheckbox.checked = false;
+                masterCheckbox.indeterminate = false;
+                return;
+            }
+
+            const checkedCount = Array.from(panelCheckboxes).filter(cb => cb.checked).length;
+            
+            masterCheckbox.checked = checkedCount === panelCheckboxes.length;
+            masterCheckbox.indeterminate = checkedCount > 0 && checkedCount < panelCheckboxes.length;
+        }
+
+        // Individual group toggle logic
+        window.toggleGroupListVisibility = function(groupName) {
+            const listContainer = document.getElementById(`list-${groupName}`);
+            const button = document.querySelector(`.group-toggle-btn[data-group="${groupName}"]`);
+            
+            if (listContainer) {
+                if (listContainer.classList.contains('hidden')) {
+                    listContainer.classList.remove('hidden');
+                    button.textContent = '패널 목록 숨기기';
+                } else {
+                    listContainer.classList.add('hidden');
+                    button.textContent = '패널 목록 더 보기';
+                }
+            }
+        }
+
+        // Delegate listener for individual panel clicks
+        document.addEventListener('change', function(e) {
+            if (e.target.classList.contains('panel-checkbox')) {
+                updateMasterCheckboxState();
+            }
+        });
+        
+        // ======================= CONFIRMATION MODAL LOGIC =======================
+
+        window.showConfirmationModal = function() {
+            confirmationModal.style.display = 'flex';
+        }
+
+        window.closeConfirmationModal = function() {
+            confirmationModal.style.display = 'none';
+        }
+
+        window.confirmSurveyProceed = function() {
+            closeConfirmationModal();
+            
+            document.getElementById('survey-type-output').textContent = lastSurveyType;
+            
+            // Navigate to the success screen
+            navigate('sent');
+        }
+
+
+        /** Home Tab Logic */
+        function switchTab(tabName) {
+            activeTab = tabName;
+            
+            // Note: Updated button selector to .home-tab-btn
+            const tabs = document.querySelectorAll('.home-tab-btn');
+            
+            tabs.forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.tab === tabName) {
+                    btn.classList.add('active');
+                }
+            });
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => {
+                content.classList.add('hidden');
+                if (content.id === `tab-content-${tabName}`) {
+                    content.classList.remove('hidden');
+                }
+            });
+            
+            // Re-render Lucide icons on tab switch if needed
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        }
+        function initializeTabStyle() {
+            if (!homeScreen.classList.contains('hidden')) {
+                switchTab(activeTab); 
+            }
+        }
+        
+        /** Menu 4: 조사 대상 Toggle Logic */
+        window.toggleTarget = function(targetId) {
+            const button = document.getElementById(`target-${targetId}`);
+            button.classList.toggle('active');
+        }
+
+        // Helper to check if FGI/Phone are clicked (User Request 2) - Now uses modal
+        window.checkSurveySelection = function() {
+            const selectElement = document.getElementById('survey-type');
+            if (selectElement.value === 'FGI' || selectElement.value === '전화 인터뷰') {
+                showAlertModal('FGI와 전화 인터뷰는 현재 구현 준비중입니다. 온라인 설문조사만 선택 가능합니다.');
+                selectElement.value = 'none'; // Reset selection
+            }
+        }
+        
+
+        // ======================= CALENDAR MODAL LOGIC =======================
+        
+        let currentDate = new Date();
+        let selectedDates = []; 
+        const modal = document.getElementById('calendar-modal');
+        const dateDisplay = document.getElementById('date-display');
+        const calendarSelectBtn = document.getElementById('calendar-select-btn');
+        
+        window.showCalendarModal = function() {
+             // Re-render calendar every time it's opened to ensure correct date highlights
+             renderCalendar(currentDate); 
+             modal.style.display = 'flex';
+        }
+        
+        window.closeCalendarModal = function() {
+            modal.style.display = 'none';
+        }
+        
+        function updateCalendarSelectButton() {
+            if (selectedDates.length === 2) {
+                calendarSelectBtn.disabled = false;
+                calendarSelectBtn.classList.remove('bg-gray-400');
+                calendarSelectBtn.classList.add('bg-blue-500');
+            } else {
+                calendarSelectBtn.disabled = true;
+                calendarSelectBtn.classList.add('bg-gray-400');
+                calendarSelectBtn.classList.remove('bg-blue-500');
+            }
+        }
+
+        function renderCalendar(date) {
+            const monthYear = document.getElementById('month-year');
+            const calendarDays = document.getElementById('calendar-days');
+            calendarDays.innerHTML = '';
+
+            const year = date.getFullYear();
+            const month = date.getMonth();
+            
+            monthYear.textContent = `${year}년 ${month + 1}월`;
+
+            const firstDayOfMonth = new Date(year, month, 1).getDay(); 
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            for (let i = 0; i < firstDayOfMonth; i++) {
+                calendarDays.innerHTML += '<div></div>';
+            }
+            
+            // Get sorted timestamps for range checking
+            const sortedDates = [...selectedDates].sort((a, b) => a.getTime() - b.getTime());
+            const startRange = sortedDates.length > 0 ? sortedDates[0].getTime() : null;
+            const endRange = sortedDates.length > 1 ? sortedDates[1].getTime() : null;
+
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayDiv = document.createElement('div');
+                const fullDate = new Date(year, month, day);
+                fullDate.setHours(0, 0, 0, 0); // Normalize time for consistent comparison
+                const time = fullDate.getTime();
+                
+                dayDiv.className = 'calendar-day';
+                dayDiv.textContent = day;
+                dayDiv.dataset.date = fullDate.toISOString().split('T')[0];
+                
+                let isSelected = false;
+
+                if (selectedDates.length === 1 && time === startRange) {
+                     isSelected = true;
+                } else if (selectedDates.length === 2) {
+                    if (time >= startRange && time <= endRange) {
+                        isSelected = true;
+                    }
+                }
+                
+                if (isSelected) {
+                    dayDiv.classList.add('selected');
+                }
+                
+                dayDiv.onclick = function() { 
+                    toggleDateSelection(fullDate); 
+                    updateCalendarSelectButton();
+                };
+                calendarDays.appendChild(dayDiv);
+            }
+            updateCalendarSelectButton();
+        }
+        
+        window.changeMonth = function(offset) {
+            currentDate.setMonth(currentDate.getMonth() + offset);
+            renderCalendar(currentDate);
+        }
+
+        function toggleDateSelection(date) {
+            // Normalize date for comparison
+            date.setHours(0, 0, 0, 0); 
+            
+            const index = selectedDates.findIndex(sd => sd.toDateString() === date.toDateString());
+
+            if (index !== -1) {
+                // If already selected, remove it
+                selectedDates.splice(index, 1);
+            } else {
+                if (selectedDates.length < 2) {
+                    // If less than 2, add the new date
+                    selectedDates.push(date);
+                    selectedDates.sort((a, b) => a - b); 
+                } else {
+                    // If 2 already selected, reset to only the new date
+                    selectedDates = [date]; 
+                }
+            }
+            renderCalendar(currentDate); 
+        }
+        
+        window.selectDateRange = function() {
+            if (selectedDates.length !== 2) {
+                showAlertModal('시작일과 종료일 두 날짜를 선택해야 합니다.');
+                return;
+            }
+            const format = (d) => d.toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\.\s/g, '.').replace(/\./g, '.').slice(0, -1);
+            
+            // Ensure dates are sorted for display
+            selectedDates.sort((a, b) => a - b);
+            
+            dateDisplay.textContent = `${format(selectedDates[0])} ~ ${format(selectedDates[1])}`;
+            dateDisplay.classList.remove('text-gray-500');
+            closeCalendarModal();
+        }
+
+        // ======================= EVENT LISTENERS =======================
+
+        // 1. Login Handler
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Scroll to top on login success
+            window.scrollTo(0, 0); 
+            console.log('Login attempt successful.');
+            navigate('home');
+            activeTab = 'report';
+            initializeTabStyle(); 
+        });
+
+        // 2. Logout Handler
+        logoutBtn.addEventListener('click', function() {
+            console.log('Logging out...');
+            navigate('login');
+        });
+
+        // 3. Tab Switch Handlers (Report/MY)
+        // Handled via inline onClick: document.getElementById('tab-report').addEventListener('click', function() { switchTab('report'); });
+
+        // 4. Header MY button handler
+        myBtnHeader.addEventListener('click', function() {
+            switchTab('my');
+        });
+        
+        // 5. Calendar Modal Trigger on Date Display Click
+        dateDisplay.addEventListener('click', showCalendarModal);
+
+
+        // Initial app load state
+        navigate('login'); 
+    </script>
+</body>
+</html>
