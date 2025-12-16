@@ -193,7 +193,7 @@
         /* Home Screen Tab Buttons (2. Changed to Blue/Gray) */
         .home-tab-btn {
             background-color: var(--color-card-bg); /* White background for better contrast/pop */
-            color: #4B5563; /* Gray */
+            color: #4B5563; /* Gray (Default text color for inactive) */
             font-weight: 700;
             padding: 10px 15px;
             border-radius: 8px;
@@ -207,7 +207,7 @@
         .home-tab-btn.active {
             background-color: var(--color-primary); /* Blue */
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Stronger shadow for active state */
-            color: white;
+            color: white; /* Active text color is WHITE */
             border-color: var(--color-primary);
         }
 
@@ -692,6 +692,15 @@
             background-color: var(--color-card-bg) !important; 
             background: none !important; /* Remove gradient */
         }
+
+        /* Insight Report Specific Backgrounds */
+        .ai-synergy-pick-bg, .ai-summary-bg {
+            background-color: var(--color-background-light); /* Light gray background */
+            border-radius: 12px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+            padding: 16px; /* Ensure padding inside the box */
+            margin-bottom: 20px; /* Ensure margin between sections */
+        }
     </style>
 </head>
 <body class="p-0 sm:p-6">
@@ -971,9 +980,6 @@
                             <select class="select-box focus:border-[var(--color-primary)]">
                                 <option value="perf">실적</option>
                                 <option>전체</option>
-                                <option>우수</option>
-                                <option>보통</option>
-                                <option>개선 필요</option>
                             </select>
                         </div>
                     </div>
@@ -1144,11 +1150,50 @@
                             </div>
                         </div>
                     </div>
+                    
+                    <!-- Q2 결과 요약 (두 번째 결과 블록 추가) -->
+                    <div class="chart-card p-4 rounded-xl shadow-sm my-4">
+                        <p class="text-base font-bold text-gray-700 mb-4">
+                            Q2. 초등학생의 독서교육이 필요하다고 생각하시나요?
+                        </p>
+                        
+                        <div class="flex justify-between items-center">
+                            <!-- Chart -->
+                            <div class="donut-chart donut-q2">
+                                <div class="donut-hole"></div>
+                            </div>
+                            <!-- Legend -->
+                            <div class="flex flex-col space-y-1 chart-legend w-3/5">
+                                <div class="flex justify-between items-center">
+                                    <span>① 매우 필요하다</span>
+                                    <span class="font-bold text-blue-600">10%</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span>② 필요하다</span>
+                                    <span class="font-bold text-green-600">30%</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span>③ 보통이다</span>
+                                    <span class="font-bold text-yellow-600">30%</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span>④ 필요하지 않다</span>
+                                    <span class="font-bold text-red-600">15%</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span>⑤ 전혀 관심이 없다</span>
+                                    <span class="font-bold text-gray-600">5%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Q2 -->
+
                 </div>
 
                 <div class="flex space-x-3 mt-4">
                     <button onclick="showAlertModal('응답자별 분석 기능을 구현해야 합니다.')" class="btn-analyze">
-                        응답자별 분석
+                        분석
                     </button>
                     <button onclick="navigate('home')" class="btn-main-home text-base">
                         홈으로 돌아가기
@@ -1268,12 +1313,12 @@
                     
                     <div class="space-y-4 text-sm">
                         <!-- 첫 번째 의견 (배경색 변경) -->
-                        <div class="border-l-4 border-gray-300 pl-3 py-1 my-inner-card" style="background-color: #f7f7f7;">
+                        <div class="border-l-4 border-gray-300 pl-3 py-1 my-inner-card" style="background-color: var(--color-background-light);">
                             <span class="font-semibold text-blue-500">스마트올</span> 초등1학년 교과서로 상담하고 싶어요.<br>
                             교과서 목차와 맞는 콘텐츠표가 필요해요.
                         </div>
                         <!-- 두 번째 의견 (배경색 변경) -->
-                        <div class="border-l-4 border-gray-300 pl-3 py-1 my-inner-card" style="background-color: #f7f7f7;">
+                        <div class="border-l-4 border-gray-300 pl-3 py-1 my-inner-card" style="background-color: var(--color-background-light);">
                             <span class="font-semibold text-blue-500">스마트올</span> 판촉물 필요해요. 천재 밀크티에서는 이렇게 용품을 현장에서 나눠주고 있어요.
                         </div>
                     </div>
@@ -1434,7 +1479,7 @@
                 </div>
 
                 <!-- 4. AI Synergy Pick -->
-                <div class="chart-card mb-6">
+                <div class="ai-synergy-pick-bg mb-6">
                     <!-- Section Title with Icon -->
                      <div class="section-header-item">
                         <div class="section-icon-container"><i data-lucide="thumbs-up" class="w-4 h-4 text-red-500"></i></div>
@@ -1459,7 +1504,7 @@
                 </div>
 
                 <!-- 5. AI 요약 -->
-                <div class="chart-card">
+                <div class="ai-summary-bg">
                     <!-- Section Title with Icon -->
                      <div class="section-header-item">
                         <div class="section-icon-container"><i data-lucide="lightbulb" class="w-4 h-4 text-yellow-600"></i></div>
