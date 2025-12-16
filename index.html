@@ -100,6 +100,8 @@
             font-weight: 700;
             color: #333;
             margin-bottom: 8px;
+            display: flex;
+            align-items: center;
         }
         .select-box, .text-input-field {
             width: 100%;
@@ -572,6 +574,93 @@
             font-weight: 700;
             color: #777;
         }
+        
+        /* Custom styling for the 상세보기 buttons */
+        .detail-btn {
+            background-color: var(--color-card-bg); /* White background */
+            color: #4A4A4A; /* Dark gray/black text */
+            font-size: 13px; /* Slightly larger for readability */
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+            transition: all 0.2s;
+            display: inline-flex; /* Align contents */
+            align-items: center;
+            white-space: nowrap;
+            border: 1px solid #E5E7EB; /* Subtle border for definition */
+        }
+        .detail-btn:hover {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Insight/Syn-Finder/Hub-Voice Section Header Icon Styling */
+        .section-header-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-top: 8px;
+            /* border-top: 1px solid #E5E7EB; /* Subtle separator for readability */
+        }
+        .section-header-item.syn-finder {
+            margin-bottom: 0;
+            padding-top: 0;
+        }
+
+        .section-header-item:not(.syn-finder):first-child {
+             border-top: none;
+             padding-top: 0;
+        }
+
+        .section-icon-container {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            background-color: var(--color-card-bg);
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+        
+        .section-title-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-grow: 1;
+        }
+        
+        .section-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #333;
+        }
+        
+        /* New style for the Report/MY tab containers in Home Screen */
+        .home-tab-content-container {
+             background-color: var(--color-card-bg);
+             border-radius: 12px;
+             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* Shadow for Report/MY Tab Container */
+             padding: 16px;
+             margin-bottom: 20px;
+        }
+        /* Style for the inner card elements within the MY tab */
+        .my-inner-card {
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+            background-color: var(--color-background-light);
+            padding: 16px;
+            border-radius: 12px;
+        }
+
+        /* Hub-Voice specific element update (Total count) */
+        .hub-voice-total-count {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
     </style>
 </head>
 <body class="p-0 sm:p-6">
@@ -622,7 +711,8 @@
                     <h2 class="text-2xl font-bold text-gray-800">혜정님, 환영합니다!</h2>
                 </div>
                 
-                <div class="bg-white rounded-xl shadow-md p-4 mb-8">
+                <!-- REPORT/MY TAB CONTAINER (그림자 음영 추가) -->
+                <div class="home-tab-content-container">
                     <div class="tab-bar flex mb-6 justify-center">
                         <button id="tab-report" data-tab="report" class="home-tab-btn active" onclick="switchTab('report')">Report</button>
                         <button id="tab-my" data-tab="my" class="home-tab-btn" onclick="switchTab('my')">MY</button>
@@ -676,7 +766,7 @@
                     
                     <div id="tab-content-my" class="tab-content hidden p-2">
                         <!-- MY Content items -->
-                        <div class="mb-6 p-4 rounded-xl" style="background-color: var(--color-background-light);">
+                        <div class="my-inner-card mb-6">
                             <h3 class="text-xl font-bold mb-3 text-gray-700">진행 중 Survey</h3>
                             <div class="flex items-center justify-between">
                                 <span class="text-3xl font-extrabold" style="color: var(--color-primary);">1건</span>
@@ -685,7 +775,7 @@
                         </div>
                         
                         <!-- Hub-Voice: UPDATED SECTION START -->
-                        <div class="p-4 rounded-xl" style="background-color: var(--color-background-light);">
+                        <div class="my-inner-card">
                             <h3 class="text-lg font-bold mb-3">Hub-Voice</h3>
                             
                             <!-- 1. 의견 건수 (20건 크게 표시, RGB(18, 148, 185) = #1294B9) -->
@@ -758,9 +848,12 @@
 
                 <!-- ---------------------- FORM SECTIONS ---------------------- -->
 
-                <!-- 1. 조사형태 -->
+                <!-- 1. 조사형태 (Icon added) -->
                 <div class="form-section">
-                    <div class="form-title">조사형태</div>
+                    <div class="form-title">
+                        <div class="section-icon-container"><i data-lucide="clipboard-list" class="w-4 h-4 text-blue-500"></i></div>
+                        조사형태
+                    </div>
                     <div class="custom-select-wrapper">
                         <select id="survey-type" class="select-box focus:border-[var(--color-primary)]" onchange="checkSurveySelection()">
                             <option value="none" selected disabled>조사 형태를 선택해주세요</option>
@@ -771,9 +864,12 @@
                     </div>
                 </div>
 
-                <!-- 2. 조사 기간 -->
+                <!-- 2. 조사 기간 (Icon added) -->
                 <div class="form-section">
-                    <div class="form-title">조사 기간</div>
+                    <div class="form-title">
+                        <div class="section-icon-container"><i data-lucide="calendar-check" class="w-4 h-4 text-green-600"></i></div>
+                        조사 기간
+                    </div>
                     <div class="select-box-wrapper">
                         <!-- Display Selected Dates -->
                         <div id="date-display" class="select-box flex-grow text-gray-500 p-2 cursor-pointer" onclick="showCalendarModal()">
@@ -786,15 +882,21 @@
                     </div>
                 </div>
 
-                <!-- 3. 조사 주제 -->
+                <!-- 3. 조사 주제 (Icon added) -->
                 <div class="form-section">
-                    <div class="form-title">조사 주제</div>
+                    <div class="form-title">
+                        <div class="section-icon-container"><i data-lucide="tag" class="w-4 h-4 text-orange-500"></i></div>
+                        조사 주제
+                    </div>
                     <input type="text" id="survey-subject" placeholder="조사 주제를 입력해 주세요." class="text-input-field flat-input w-full p-2" />
                 </div>
 
-                <!-- 4. 조사 대상 (Toggle Buttons) -->
+                <!-- 4. 조사 대상 (Toggle Buttons) (Icon added) -->
                 <div class="form-section">
-                    <div class="form-title">조사 대상</div>
+                    <div class="form-title">
+                        <div class="section-icon-container"><i data-lucide="users" class="w-4 h-4 text-purple-600"></i></div>
+                        조사 대상
+                    </div>
                     <div class="flex space-x-3">
                         <button id="target-kyomun" class="toggle-btn" onclick="toggleTarget('kyomun')">교문</button>
                         <button id="target-mirae" class="toggle-btn" onclick="toggleTarget('mirae')">미래</button>
@@ -802,9 +904,12 @@
                     </div>
                 </div>
 
-                <!-- 5. 세부조건 (Dropdowns) -->
+                <!-- 5. 세부조건 (Dropdowns) (Icon added) -->
                 <div class="form-section">
-                    <div class="form-title">세부조건 (선택 사항)</div>
+                    <div class="form-title">
+                        <div class="section-icon-container"><i data-lucide="sliders" class="w-4 h-4 text-gray-500"></i></div>
+                        세부조건 (선택 사항)
+                    </div>
                     <div class="space-y-3">
                         <!-- 경력 (Updated options) -->
                         <div class="custom-select-wrapper">
@@ -838,18 +943,24 @@
                     </div>
                 </div>
 
-                <!-- 6. 조사인원 (Number Input) -->
+                <!-- 6. 조사인원 (Number Input) (Icon added) -->
                 <div class="form-section">
-                    <div class="form-title">조사인원</div>
+                    <div class="form-title">
+                        <div class="section-icon-container"><i data-lucide="user-plus" class="w-4 h-4 text-red-500"></i></div>
+                        조사인원
+                    </div>
                     <div class="flex items-center space-x-2">
                         <input type="number" id="requested-count" min="1" placeholder="숫자를 입력하세요" class="text-input-field flat-input w-full p-2 text-right" />
                         <span class="text-lg font-semibold text-gray-700">명</span>
                     </div>
                 </div>
 
-                <!-- 7. 설문링크 (URL Input) -->
+                <!-- 7. 설문링크 (URL Input) (Icon added) -->
                 <div class="form-section">
-                    <div class="form-title">설문링크</div>
+                    <div class="form-title">
+                        <div class="section-icon-container"><i data-lucide="link" class="w-4 h-4 text-gray-500"></i></div>
+                        설문링크
+                    </div>
                     <input type="url" id="survey-link" placeholder="설문조사 URL을 입력해 주세요." class="text-input-field flat-input w-full p-2" />
                 </div>
                 
@@ -875,7 +986,7 @@
              <!-- Header (Flat UI) -->
             <header class="app-header flex items-center justify-between p-4 sticky top-0 z-10">
                 <div class="flex items-center">
-                    <button onclick="navigate('syn-finder')" class="mr-2 text-gray-500 hover:text-gray-700">
+                    <button onclick="navigate('home')" class="mr-2 text-gray-500 hover:text-gray-700">
                         <i data-lucide="chevron-left" class="w-6 h-6"></i>
                     </button>
                     <h1 class="text-xl font-bold text-gray-800">맞춤 추천 패널</h1>
@@ -1027,7 +1138,7 @@
                                 <span class="font-bold text-red-600">15%</span>
                             </div>
                             <div class="flex justify-between items-center">
-                                <span>⑤ 매우 필요하지 않다</span>
+                                <span>⑤ 전혀 관심이 없다</span>
                                 <span class="font-bold text-gray-600">5%</span>
                             </div>
                         </div>
@@ -1059,33 +1170,36 @@
             </header>
 
             <main class="flex-grow p-4 pb-10 overflow-y-auto">
-                <!-- Header Description -->
+                <!-- Header Description (폰트 크기 base로 키움) -->
                 <div class="mb-6 px-2">
-                    <p class="text-sm font-extrabold text-gray-800 mb-1">
+                    <p class="text-base font-extrabold text-gray-800 mb-1">
                         '현장의 지혜＇를 엿보세요.
                     </p>
-                    <p class="text-sm text-gray-600">
+                    <p class="text-base text-gray-600">
                         현장의 의미 있는 제안과 인사이트를 확인하실 수 있습니다.
                     </p>
                 </div>
 
-                <!-- 2. 의견 통계 카드 -->
+                <!-- 2. 의견 통계 카드 (배경색 흰색으로 변경, 아이콘 추가) -->
                 <div class="flex justify-between space-x-3 mb-8">
-                    <!-- 의견 건수 -->
+                    <!-- 의견 건수 (Icon added) -->
                     <div class="stat-card">
+                        <div class="section-icon-container mx-auto mb-1"><i data-lucide="file-text" class="w-4 h-4 text-gray-600"></i></div>
                         <div class="stat-label">의견 건수</div>
                         <div class="stat-value flex justify-center flex-col items-center">
                             <span>20건</span>
                             <span class="text-xs text-red-500 mt-1">▲12</span>
                         </div>
                     </div>
-                    <!-- 확인 건수 -->
+                    <!-- 확인 건수 (Icon added) -->
                     <div class="stat-card">
+                        <div class="section-icon-container mx-auto mb-1"><i data-lucide="check-circle" class="w-4 h-4 text-green-600"></i></div>
                         <div class="stat-label">확인 건수</div>
                         <div class="stat-value">18건</div>
                     </div>
-                    <!-- 미확인 건수 -->
+                    <!-- 미확인 건수 (Icon added) -->
                     <div class="stat-card">
+                        <div class="section-icon-container mx-auto mb-1"><i data-lucide="alert-triangle" class="w-4 h-4 text-red-500"></i></div>
                         <div class="stat-label">미확인 건수</div>
                         <div class="stat-value">2건</div>
                     </div>
@@ -1093,9 +1207,20 @@
                 
                 <!-- 3. 요약 메뉴 (Existing Content Below) -->
                 <div class="chart-card p-4 mb-6">
-                    <div class="form-title mt-0">요약</div>
+                    <!-- 요약 제목 + 상세 보기 버튼 추가 -->
+                    <div class="flex justify-between items-center">
+                        <div class="form-title mt-0 mb-0">
+                            <div class="section-icon-container"><i data-lucide="file-text" class="w-4 h-4 text-gray-600"></i></div>
+                            요약
+                        </div>
+                        <!-- UPDATED DETAIL BUTTON STYLE -->
+                        <button class="detail-btn" onclick="showAlertModal('요약 상세 보기 페이지로 이동합니다.')">
+                            ▷ 상세보기
+                        </button>
+                    </div>
+                    
                     <!-- 4.1) 스마트올 언급 분석 (막대 그래프) -->
-                    <p class="text-base font-semibold text-gray-700 mb-4">
+                    <p class="text-base font-semibold text-gray-700 mt-3 mb-4">
                         <span class="font-extrabold text-blue-500">스마트올</span> 언급이 가장 많아요.
                     </p>
                     
@@ -1120,9 +1245,16 @@
 
                 <!-- 4.2) 스마트올 의견 목록 -->
                 <div class="chart-card mb-6">
-                    <p class="text-base font-semibold text-gray-700 mb-4">
-                        <span class="font-extrabold text-blue-500">스마트올</span>에서 이런 의견이 있었어요.
-                    </p>
+                    <!-- 스마트올 의견 제목 + 상세 보기 버튼 추가 -->
+                    <div class="flex justify-between items-center mb-4">
+                         <p class="text-base font-semibold text-gray-700 mb-0">
+                            <span class="font-extrabold text-blue-500">스마트올</span>에서 이런 의견이 있었어요.
+                        </p>
+                        <!-- UPDATED DETAIL BUTTON STYLE -->
+                        <button class="detail-btn" onclick="showAlertModal('스마트올 의견 상세 보기 페이지로 이동합니다.')">
+                            ▷ 상세보기
+                        </button>
+                    </div>
                     
                     <div class="space-y-4 text-sm">
                         <div class="border-l-4 border-gray-300 pl-3 py-1">
@@ -1137,7 +1269,14 @@
 
                 <!-- 4.3) 미확인 의견 메뉴 (AI 요약) -->
                 <div class="chart-card p-4">
-                    <div class="form-title mb-3">미확인 의견</div>
+                    <!-- 미확인 의견 제목 + 상세 보기 버튼 추가 -->
+                    <div class="flex justify-between items-center mb-3">
+                        <div class="form-title mb-0">미확인 의견</div>
+                        <!-- UPDATED DETAIL BUTTON STYLE -->
+                        <button class="detail-btn" onclick="showAlertModal('미확인 의견 상세 보기 페이지로 이동합니다.')">
+                            ▷ 상세보기
+                        </button>
+                    </div>
                 
                     <div class="space-y-3">
                         <!-- AI 요약 1 -->
@@ -1181,7 +1320,17 @@
 
                 <!-- 1. KEYWORD 언급량 분석 (Reusing Report Circles for visual emphasis) -->
                 <div class="chart-card mb-6">
-                    <div class="chart-title">KEYWORD 언급량 분석</div>
+                    <!-- Section Title with Icon -->
+                    <div class="section-header-item">
+                        <div class="section-icon-container"><i data-lucide="hash" class="w-4 h-4 text-gray-600"></i></div>
+                        <div class="section-title-group">
+                            <span class="section-title">KEYWORD 언급량 분석</span>
+                            <button class="detail-btn" onclick="showAlertModal('KEYWORD 언급량 상세 보기 페이지로 이동합니다.')">
+                                ▷ 상세보기
+                            </button>
+                        </div>
+                    </div>
+
                     <div id="report-circles-layout-insight" class="flex flex-wrap justify-center items-center">
                         <!-- Reusing the Circle structure -->
                         <div class="report-item-container"><span class="circle-text w-24 h-24 bg-red-400 text-white text-size-lg">오브레인</span></div>
@@ -1195,9 +1344,18 @@
 
                 <!-- 2. Feedback Map (Donut Chart) -->
                 <div class="chart-card mb-6">
-                    <div class="chart-title">Feedback Map</div>
+                    <!-- Section Title with Icon -->
+                    <div class="section-header-item">
+                        <div class="section-icon-container"><i data-lucide="message-square" class="w-4 h-4 text-green-600"></i></div>
+                        <div class="section-title-group">
+                            <span class="section-title">Feedback Map</span>
+                            <button class="detail-btn" onclick="showAlertModal('Feedback Map 상세 보기 페이지로 이동합니다.')">
+                                ▷ 상세보기
+                            </button>
+                        </div>
+                    </div>
                     
-                    <div class="flex justify-between items-center">
+                    <div class="flex justify-between items-center pt-3">
                         <!-- Stats -->
                         <div class="flex flex-col space-y-2 text-sm font-semibold w-2/5">
                             <p class="flex justify-between"><span>문제 제기</span><span class="text-red-500">78건</span></p>
@@ -1207,8 +1365,8 @@
                         <!-- Donut Chart (Total: 451) -->
                         <div class="donut-chart" style="width: 120px; height: 120px; /* Feedback Map Colors */
                             --c1: #ef4444; /* Problem 78/451 = 17.3% */
-                            --c2: #f59e0b; /* Suggestion 121/451 = 26.8% */
-                            --c3: #10b981; /* Case 252/451 = 55.9% */
+                            --c2: #f97316; /* Suggestion 121/451 = 26.8% - Changed to a clearer orange */
+                            --c3: #22C55E; /* Case 252/451 = 55.9% - Changed to a clearer green */
                             background: conic-gradient(
                                 var(--c1) 0%, var(--c1) 17.3%,
                                 var(--c2) 17.3%, var(--c2) 44.1%, /* 17.3 + 26.8 = 44.1 */
@@ -1221,9 +1379,20 @@
 
                 <!-- 3. Timing Scope (Line Graph Simulation) -->
                 <div class="chart-card mb-6">
-                    <div class="flex justify-between items-center mb-3">
+                    <!-- Section Title with Icon -->
+                    <div class="section-header-item">
+                        <div class="section-icon-container"><i data-lucide="calendar" class="w-4 h-4 text-blue-500"></i></div>
+                        <div class="section-title-group">
+                             <div class="chart-title mb-0">Timing Scope - 12월</div>
+                            <button class="detail-btn" onclick="showAlertModal('Timing Scope 상세 보기 페이지로 이동합니다.')">
+                                ▷ 상세보기
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-between items-center mb-3 pt-3">
                         <button><i data-lucide="chevron-left" class="w-5 h-5 text-gray-500"></i></button>
-                        <div class="chart-title mb-0">Timing Scope - 12월</div>
+                        <div class="chart-title mb-0"></div> <!-- Title already moved up to insight-header-item -->
                         <button><i data-lucide="chevron-right" class="w-5 h-5 text-gray-500"></i></button>
                     </div>
                     
@@ -1254,8 +1423,18 @@
 
                 <!-- 4. AI Synergy Pick -->
                 <div class="chart-card mb-6">
-                    <div class="chart-title">AI Synergy Pick</div>
-                    <div class="space-y-4 text-sm">
+                    <!-- Section Title with Icon -->
+                     <div class="section-header-item">
+                        <div class="section-icon-container"><i data-lucide="thumbs-up" class="w-4 h-4 text-red-500"></i></div>
+                        <div class="section-title-group">
+                            <span class="section-title">AI Synergy Pick</span>
+                            <button class="detail-btn" onclick="showAlertModal('AI Synergy Pick 상세 보기 페이지로 이동합니다.')">
+                                ▷ 상세보기
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-4 text-sm pt-3">
                         <p class="border-l-4 border-gray-300 pl-3 py-1">
                             <span class="font-bold">수업을 하다 보니 아이가 반복 학습에 익숙해지고,</span><br/>
                             그 변화를 느낀 학부모님이 먼저 지인에게 뫼비우스를 소개하셨어요. 설명보다 실제 학습 경험이 자연스럽게 가입으로 이어진 사례였습니다.
@@ -1269,8 +1448,18 @@
 
                 <!-- 5. AI 요약 -->
                 <div class="chart-card">
-                    <div class="chart-title">AI 요약</div>
-                    <ul class="list-disc list-inside space-y-2 text-sm text-gray-700">
+                    <!-- Section Title with Icon -->
+                     <div class="section-header-item">
+                        <div class="section-icon-container"><i data-lucide="lightbulb" class="w-4 h-4 text-yellow-600"></i></div>
+                        <div class="section-title-group">
+                            <span class="section-title">AI 요약</span>
+                            <button class="detail-btn" onclick="showAlertModal('AI 요약 상세 보기 페이지로 이동합니다.')">
+                                ▷ 상세보기
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <ul class="list-disc list-inside space-y-2 text-sm text-gray-700 pt-3">
                         <li>이번 달은 <span class="font-bold text-blue-500">뫼비우스 출시 첫 달</span>로 가장 언급이 많았음</li>
                         <li>특히 뫼비우스 가입 우수 사례가 가장 많이 올라왔으며, <span class="font-bold">미래 부문 의견이 80%</span>에 달함</li>
                         <li>우수 사례로는 친구 소개, 패드 교체 상담, 유치원 판매 사례가 있음</li>
